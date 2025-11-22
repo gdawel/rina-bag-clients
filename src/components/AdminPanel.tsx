@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { User } from '../types/User';
-import { Users, Shield, FileSpreadsheet } from 'lucide-react';
+import { Users, Shield, FileSpreadsheet, Eye } from 'lucide-react';
 import { UserService } from '../services/userService';
 import { exportToExcel } from '../utils/excelExport';
+import UserViewModal from './UserViewModal';
 
 export default function AdminPanel() {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState('');
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const loadUsers = async () => {
     setIsLoading(true);
@@ -35,6 +37,14 @@ export default function AdminPanel() {
     } finally {
       setIsExporting(false);
     }
+  };
+
+  const handleViewUser = (user: User) => {
+    setSelectedUser(user);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedUser(null);
   };
 
   useEffect(() => {
@@ -73,6 +83,14 @@ export default function AdminPanel() {
         </button>
       </div>
 
+      {/* View Modal */}
+      {selectedUser && (
+        <UserViewModal
+          user={selectedUser}
+          onClose={handleCloseModal}
+        />
+      )}
+
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
           <p className="text-red-600">{error}</p>
@@ -105,6 +123,7 @@ export default function AdminPanel() {
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Telefone</th>
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Cidade</th>
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Data</th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -117,6 +136,15 @@ export default function AdminPanel() {
                     <td className="py-3 px-4 text-sm text-gray-600">{user.cidade}, {user.estado}</td>
                     <td className="py-3 px-4 text-sm text-gray-600">
                       {user.createdAt ? new Date(user.createdAt).toLocaleDateString('pt-BR') : '-'}
+                    </td>
+                    <td className="py-3 px-4">
+                      <button
+                        onClick={() => handleViewUser(user)}
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors text-sm font-medium"
+                      >
+                        <Eye className="w-4 h-4" />
+                        Ver
+                      </button>
                     </td>
                   </tr>
                 ))}
