@@ -309,7 +309,6 @@ export default function UserForm({ onSubmit, initialData, isEdit = false }: User
                 name="complemento"
                 value={formData.complemento}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors"
                 placeholder="Apto, Casa, etc."
               />
